@@ -1,0 +1,429 @@
+pcall(function() game:GetService("CoreGui"):FindFirstChild("FaresGui"):Destroy() end)
+local ScreenGui = Instance.new("ScreenGui"); ScreenGui.Name = "FaresGui"; ScreenGui.Parent = game:GetService("CoreGui"); ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame"); MainFrame.Name = "MainFrame"; MainFrame.Size = UDim2.new(0, 400, 0, 350); MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175); MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45); MainFrame.BorderColor3 = Color3.fromRGB(80, 80, 120); MainFrame.BorderSizePixel = 2; MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.Parent = ScreenGui
+
+local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v3"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
+
+local localPlayer = game:GetService("Players").LocalPlayer
+local features = { AutoRefreshActive = false }
+local autoRefreshCoroutine = nil
+
+local toggleGuiButton = Instance.new("TextButton", MainFrame); toggleGuiButton.Name = "ToggleGUI"; toggleGuiButton.Size = UDim2.new(0, 28, 0, 28); toggleGuiButton.Position = UDim2.new(1, -32, 0, 1); toggleGuiButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80); toggleGuiButton.Text = "-"; toggleGuiButton.Font = Enum.Font.SourceSansBold; toggleGuiButton.TextColor3 = Color3.fromRGB(255, 255, 255); toggleGuiButton.TextSize = 24
+local isGuiVisible = true
+function toggleGuiVisibility() isGuiVisible = not isGuiVisible; for i, child in ipairs(MainFrame:GetChildren()) do if child ~= toggleGuiButton and child ~= TitleLabel then child.Visible = isGuiVisible end end; MainFrame.Size = isGuiVisible and UDim2.new(0, 400, 0, 350) or UDim2.new(0, 400, 0, 30); toggleGuiButton.Text = isGuiVisible and "-" or "+" end
+toggleGuiButton.MouseButton1Click:Connect(toggleGuiVisibility)
+
+local pages = {}; local tabs = {}
+local tabContainer = Instance.new("Frame", MainFrame)
+tabContainer.Size = UDim2.new(1, 0, 0, 35)
+tabContainer.Position = UDim2.new(0, 0, 0, 30)
+tabContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+tabContainer.BorderSizePixel = 0
+
+local pageContainer = Instance.new("Frame", MainFrame); pageContainer.Size = UDim2.new(1, 0, 1, -65); pageContainer.Position = UDim2.new(0, 0, 0, 65); pageContainer.BackgroundTransparency = 1
+local function createPage(name) local page = Instance.new("Frame", pageContainer); page.Name = name .. "Page"; page.Size = UDim2.new(1, 0, 1, 0); page.BackgroundTransparency = 1; page.Visible = false; pages[name] = page; return page end
+local function switchPage(name) for pageName, page in pairs(pages) do page.Visible = (pageName == name) end; for tabName, tabButton in pairs(tabs) do tabButton.BackgroundColor3 = (tabName == name) and Color3.fromRGB(80, 80, 120) or Color3.fromRGB(50, 50, 60) end end
+local function createTab(name, position) local tabButton = Instance.new("TextButton", tabContainer); tabButton.Name = name .. "Tab"; tabButton.Size = UDim2.new(0, 100, 1, 0); tabButton.Position = UDim2.new(0, position, 0, 0); tabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 60); tabButton.BorderSizePixel = 0; tabButton.Font = Enum.Font.SourceSansBold; tabButton.Text = name; tabButton.TextColor3 = Color3.fromRGB(255, 255, 255); tabButton.TextSize = 16; tabButton.MouseButton1Click:Connect(function() switchPage(name) end); tabs[name] = tabButton end
+local mainPage = createPage("Main"); local utilityPage = createPage("Utility"); local playerPage = createPage("Player")
+createTab("Main", 0); createTab("Utility", 100); createTab("Player", 200)
+switchPage("Main")
+
+local pvpPage = createPage("PVP")
+createTab("PVP", 300) 
+
+
+local autoJumpButton = Instance.new("TextButton", pvpPage)
+autoJumpButton.Name = "AutoJumpButton"
+autoJumpButton.Size = UDim2.new(0, 200, 0, 40)
+autoJumpButton.Position = UDim2.new(0.5, -100, 0, 20)
+autoJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+autoJumpButton.Text = "AutoJump [OFF]"
+autoJumpButton.Font = Enum.Font.SourceSansBold
+autoJumpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoJumpButton.TextSize = 18
+
+local autoJumpEnabled = false
+local HumanModCons = {}
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local function setupAutoJump(Char)
+	local Human = Char:FindFirstChildWhichIsA("Humanoid")
+	if not Human then return end
+
+	local function autoJumpFunc()
+		if not (Char and Human and Human.RootPart) then return end
+		local pos = Human.RootPart.Position
+		local look = Human.RootPart.CFrame.LookVector
+
+		local check1 = workspace:FindPartOnRay(Ray.new(pos - Vector3.new(0,1.5,0), look * 3), Human.Parent)
+		local check2 = workspace:FindPartOnRay(Ray.new(pos + Vector3.new(0,1.5,0), look * 3), Human.Parent)
+
+		if check1 or check2 then
+			Human.Jump = true
+		end
+	end
+
+	HumanModCons.ajLoop = RunService.RenderStepped:Connect(autoJumpFunc)
+end
+
+local function removeAutoJump()
+	if HumanModCons.ajLoop then
+		HumanModCons.ajLoop:Disconnect()
+		HumanModCons.ajLoop = nil
+	end
+end
+
+autoJumpButton.MouseButton1Click:Connect(function()
+	autoJumpEnabled = not autoJumpEnabled
+	if autoJumpEnabled then
+		autoJumpButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+		autoJumpButton.Text = "AutoJump [ON]"
+		if player.Character then
+			setupAutoJump(player.Character)
+		end
+		HumanModCons.ajCA = player.CharacterAdded:Connect(function(newChar)
+			if HumanModCons.ajLoop then HumanModCons.ajLoop:Disconnect() end
+			setupAutoJump(newChar)
+		end)
+	else
+		autoJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+		autoJumpButton.Text = "AutoJump [OFF]"
+		removeAutoJump()
+		if HumanModCons.ajCA then
+			HumanModCons.ajCA:Disconnect()
+			HumanModCons.ajCA = nil
+		end
+	end
+end)
+
+
+
+
+local hitboxButton = Instance.new("TextButton", pvpPage)
+hitboxButton.Name = "HitboxButton"
+hitboxButton.Size = UDim2.new(0, 180, 0, 40)
+hitboxButton.Position = UDim2.new(0.5, -90, 0, 69)
+hitboxButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+hitboxButton.Text = "Hitbox [OFF]"
+hitboxButton.Font = Enum.Font.SourceSansBold
+hitboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+hitboxButton.TextSize = 18
+
+local hitboxEnabled = false
+local originalSizes = {} 
+
+hitboxButton.MouseButton1Click:Connect(function()
+    hitboxEnabled = not hitboxEnabled
+    if hitboxEnabled then
+        hitboxButton.Text = "Hitbox [ON]"
+        hitboxButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+        
+        
+        local Players = game:GetService("Players")
+        local speaker = Players.LocalPlayer
+        local args = {"all", "16", "0.4"}
+        
+        local function getPlayersByName(name)
+            local list = {}
+            if name:lower() == "all" then
+                for _, plr in pairs(Players:GetPlayers()) do
+                    if plr ~= speaker then
+                        table.insert(list, plr)
+                    end
+                end
+            else
+                local plr = Players:FindFirstChild(name)
+                if plr then
+                    table.insert(list, plr)
+                end
+            end
+            return list
+        end
+
+        local playersToHit = getPlayersByName(args[1])
+        local sizeArg = tonumber(args[2]) or 16
+        local transparency = tonumber(args[3]) or 0.4
+
+        for _, plr in pairs(playersToHit) do
+            if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local Root = plr.Character.HumanoidRootPart
+                if Root:IsA("BasePart") then
+                    originalSizes[plr] = {Size = Root.Size, Transparency = Root.Transparency}
+                    Root.Size = Vector3.new(sizeArg, sizeArg, sizeArg)
+                    Root.Transparency = transparency
+                    Root.CanCollide = false
+                end
+            end
+        end
+    else
+        
+        hitboxButton.Text = "Hitbox [OFF]"
+        hitboxButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+
+        for plr, data in pairs(originalSizes) do
+            if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local Root = plr.Character.HumanoidRootPart
+                Root.Size = data.Size
+                Root.Transparency = data.Transparency
+                Root.CanCollide = true
+            end
+        end
+        originalSizes = {}
+    end
+end) 
+
+
+task.spawn(function()
+local PlotsFolder = workspace:WaitForChild("Plots")
+local function findMyPlot() for _, plot in ipairs(PlotsFolder:GetChildren()) do local podiums = plot:FindFirstChild("AnimalPodiums") if podiums then for _, pod in ipairs(podiums:GetChildren()) do local claim = pod:FindFirstChild("Claim") if claim then local hitbox = claim:FindFirstChild("Hitbox") if hitbox then local touch = hitbox:FindFirstChild("TouchInterest") if touch then return plot end end end end end end; return nil end
+local MyPlot = findMyPlot()
+if not MyPlot then return end
+local function findYourBaseLabel(plot) for _, obj in ipairs(plot:GetDescendants()) do if obj:IsA("TextLabel") and obj.Text then if string.lower(obj.Text):find("your base") or string.lower(obj.Text):find("yourbase") then return obj end end end; return nil end
+local lbl = findYourBaseLabel(MyPlot)
+if not lbl then return end
+local function getWorldPartFromLabel(label) local gui = label:FindFirstAncestorWhichIsA("SurfaceGui") or label:FindFirstAncestorWhichIsA("BillboardGui"); if gui and gui.Adornee then return gui.Adornee end; local p = label.Parent; while p do if p:IsA("BasePart") then return p end; p = p.Parent end; return nil end
+local basePart = getWorldPartFromLabel(lbl)
+if not basePart then return end
+local function createGlowingBeam(character) local HRP = character:WaitForChild("HumanoidRootPart"); local attachment0 = Instance.new("Attachment"); attachment0.Parent = HRP; local attachment1 = Instance.new("Attachment"); attachment1.Parent = basePart; local beam = Instance.new("Beam"); beam.Attachment0 = attachment0; beam.Attachment1 = attachment1; beam.FaceCamera = true; beam.Width0 = 0.3; beam.Width1 = 0.3; beam.LightEmission = 1; beam.Transparency = NumberSequence.new(0); beam.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 150, 255)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 255))}; beam.Parent = workspace end
+if localPlayer.Character then createGlowingBeam(localPlayer.Character) end
+localPlayer.CharacterAdded:Connect(createGlowingBeam)
+end)
+local autoRefreshButton = Instance.new("TextButton", mainPage); autoRefreshButton.Name = "ToggleAutoRefresh"; autoRefreshButton.Size = UDim2.new(0, 180, 0, 40); autoRefreshButton.Position = UDim2.new(0.5, -90, 0, 20); autoRefreshButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); autoRefreshButton.Text = "Timer ESP [OFF]"; autoRefreshButton.Font = Enum.Font.SourceSansBold; autoRefreshButton.TextColor3 = Color3.fromRGB(255, 255, 255); autoRefreshButton.TextSize = 18
+function cleanupClones() for _, plot in ipairs(workspace.Plots:GetChildren()) do if plot:FindFirstChild("FaresCloneGUI") then plot.FaresCloneGUI:Destroy() end end end
+function createClones() for _, plot in ipairs(workspace.Plots:GetChildren()) do local mainObject = plot:FindFirstChild("Purchases") and plot.Purchases:FindFirstChild("PlotBlock") and plot.Purchases.PlotBlock:FindFirstChild("Main") if mainObject then local realTimerGui = mainObject:FindFirstChild("BillboardGui") if realTimerGui then local cloneGui = realTimerGui:Clone(); cloneGui.Name = "FaresCloneGUI"; cloneGui.Parent = plot; cloneGui.Adornee = mainObject; cloneGui.StudsOffset = Vector3.new(0, 15, 0); cloneGui.AlwaysOnTop = true; cloneGui.MaxDistance = math.huge; cloneGui.Size = UDim2.new(0, 400, 0, 100); if cloneGui:FindFirstChild("Main") then cloneGui.Main.TextSize = 100; cloneGui.Main.TextStrokeTransparency = 0 end; if cloneGui:FindFirstChild("Locked") then cloneGui.Locked.TextSize = 80; cloneGui.Locked.TextStrokeTransparency = 0 end end end end end
+function startAutoRefresher() if autoRefreshCoroutine then coroutine.close(autoRefreshCoroutine) end; autoRefreshCoroutine = coroutine.create(function() while features.AutoRefreshActive do cleanupClones(); wait(0.1); createClones(); wait(1) end; cleanupClones() end); coroutine.resume(autoRefreshCoroutine) end
+function toggleAutoRefresh() features.AutoRefreshActive = not features.AutoRefreshActive; autoRefreshButton.BackgroundColor3 = features.AutoRefreshActive and Color3.fromRGB(50, 255, 50) or Color3.fromRGB(255, 50, 50); autoRefreshButton.Text = features.AutoRefreshActive and "Timer ESP [ON]" or "Timer ESP [OFF]"; if features.AutoRefreshActive then startAutoRefresher() else if autoRefreshCoroutine then coroutine.close(autoRefreshCoroutine); autoRefreshCoroutine = nil end; cleanupClones() end end
+autoRefreshButton.MouseButton1Click:Connect(toggleAutoRefresh)
+local xrayButton = Instance.new("TextButton", mainPage); xrayButton.Name = "XrayButton"; xrayButton.Size = UDim2.new(0, 180, 0, 40); xrayButton.Position = UDim2.new(0.5, -90, 0, 70); xrayButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255); xrayButton.Text = "Enable X-RAY"; xrayButton.Font = Enum.Font.GothamBlack; xrayButton.TextColor3 = Color3.fromRGB(255, 255, 255); xrayButton.TextSize = 18; local xrayEnabled = false; local function applyXray(obj) if obj:IsA("BasePart") then obj.LocalTransparencyModifier = xrayEnabled and 0.7 or 0 end end; local function processDecorations(decorations) for _, obj in pairs(decorations:GetChildren()) do if obj:IsA("Model") then for _, part in pairs(obj:GetDescendants()) do applyXray(part) end else applyXray(obj) end end end; local function toggleXray() xrayEnabled = not xrayEnabled; xrayButton.Text = xrayEnabled and "Disable X-RAY" or "Enable X-RAY"; for _, plot in pairs(workspace.Plots:GetChildren()) do local decorations = plot:FindFirstChild("Decorations") if decorations then processDecorations(decorations) end end end; xrayButton.MouseButton1Click:Connect(toggleXray)
+local returnBaseButton = Instance.new("TextButton", mainPage); returnBaseButton.Name = "ReturnBaseButton"; returnBaseButton.Size = UDim2.new(0, 180, 0, 40); returnBaseButton.Position = UDim2.new(0.5, -90, 0, 120); returnBaseButton.BackgroundColor3 = Color3.fromRGB(80, 80, 120); returnBaseButton.Text = "العودة الى base"; returnBaseButton.Font = Enum.Font.SourceSansBold; returnBaseButton.TextColor3 = Color3.fromRGB(255, 255, 255); returnBaseButton.TextSize = 18; returnBaseButton.MouseButton1Click:Connect(function() local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end)
+
+
+
+local welcomeLabel = Instance.new("TextLabel", mainPage)
+welcomeLabel.Name = "WelcomeLabel"
+welcomeLabel.Size = UDim2.new(1, -20, 0, 0)
+welcomeLabel.Position = UDim2.new(0, 10, 0, 215) 
+welcomeLabel.BackgroundTransparency = 1
+welcomeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+welcomeLabel.Font = Enum.Font.SourceSans
+welcomeLabel.TextSize = 16
+welcomeLabel.TextWrapped = true
+welcomeLabel.Text = "Welcome to my script this script made by fo_fares more scripts in map stealabrainrot and so much scripts pvp follow me in tik tok  (._.f.o_) and thank u so much for use my script"
+welcomeLabel.AutomaticSize = Enum.AutomaticSize.Y
+
+local espPlayersButton = Instance.new("TextButton", mainPage)
+espPlayersButton.Name = "EspPlayersButton"
+espPlayersButton.Size = UDim2.new(0, 180, 0, 40)
+espPlayersButton.Position = UDim2.new(0.5, -90, 0, 170)
+espPlayersButton.BackgroundColor3 = Color3.fromRGB(150, 50, 255)
+espPlayersButton.Text = "ESP Players"
+espPlayersButton.Font = Enum.Font.SourceSansBold
+espPlayersButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+espPlayersButton.TextSize = 18
+espPlayersButton.MouseButton1Click:Connect(function()
+pcall(function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/FaresXForest/ESP/refs/heads/main/ESP/ESPV2/ESPV3'))()
+end)
+end)
+
+local optimizeButton = Instance.new("TextButton", utilityPage); optimizeButton.Name = "OptimizeButton"; optimizeButton.Size = UDim2.new(0, 200, 0, 50); optimizeButton.Position = UDim2.new(0.5, -100, 0, 20); optimizeButton.BackgroundColor3 = Color3.fromRGB(80, 200, 120); optimizeButton.Text = "تحسين الأداء"; optimizeButton.Font = Enum.Font.SourceSansBold; optimizeButton.TextSize = 20; optimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255); optimizeButton.MouseButton1Click:Connect(function() task.spawn(function() while task.wait(60) do for _, obj in pairs(game:GetDescendants()) do if obj:IsA("ParticleEmitter") or obj:IsA("Trail") then obj.Enabled = false end end; workspace.StreamingEnabled = true; workspace.StreamingMinRadius = 64; workspace.StreamingTargetRadius = 128 end end); task.spawn(function() pcall(function() if setfpscap then setfpscap(120) end; settings().Rendering.QualityLevel = Enum.QualityLevel.Level01; game:GetService("Lighting").GlobalShadows = false; game:GetService("Lighting").FogEnd = 999999; game:GetService("Lighting").Brightness = 2 end) end); task.spawn(function() while task.wait(10) do if game:GetService("RunService").IsRunning then pcall(function() if setfpscap then setfpscap(120 + math.random(0, 5)) end; game:GetService("Lighting").Ambient = Color3.new(0, 0, 0); game:GetService("Lighting").OutdoorAmbient = Color3.new(0, 0, 0) end) end end end) end)
+local antiAFKButton = Instance.new("TextButton", utilityPage); antiAFKButton.Name = "AntiAFKButton"; antiAFKButton.Size = UDim2.new(0, 200, 0, 50); antiAFKButton.Position = UDim2.new(0.5, -100, 0, 80); antiAFKButton.BackgroundColor3 = Color3.fromRGB(255, 150, 50); antiAFKButton.Text = "ANTIAFK"; antiAFKButton.Font = Enum.Font.SourceSansBold; antiAFKButton.TextSize = 20; antiAFKButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiAFKButton.MouseButton1Click:Connect(function() spawn(function() game.StarterGui:SetCore("SendNotification", { Title = "✅ Anti-AFK", Text = "Anti AFK has been enabled.", Icon = "", Duration = 5 }) end); for i, v in pairs(getconnections(game.Players.LocalPlayer.Idled)) do v:Disable() end end)
+
+
+local disableAnimButton = Instance.new("TextButton", utilityPage)
+disableAnimButton.Name = "DisableAnimButton"
+disableAnimButton.Size = UDim2.new(0, 200, 0, 50)
+disableAnimButton.Position = UDim2.new(0.5, -100, 0, 200) 
+disableAnimButton.BackgroundColor3 = Color3.fromRGB(255, 100, 50)
+disableAnimButton.Text = "Disable Animation [OFF]"
+disableAnimButton.Font = Enum.Font.SourceSansBold
+disableAnimButton.TextSize = 20
+disableAnimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local animDisabled = false
+local HumanAnimCons = {}
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function disableAnimate(Char)
+	local Animate = Char:FindFirstChild("Animate")
+	if Animate then
+		Animate.Disabled = true
+	end
+end
+
+local function enableAnimate(Char)
+	local Animate = Char:FindFirstChild("Animate")
+	if Animate then
+		Animate.Disabled = false
+	end
+end
+
+disableAnimButton.MouseButton1Click:Connect(function()
+	animDisabled = not animDisabled
+	if animDisabled then
+		disableAnimButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+		disableAnimButton.Text = "Disable Animation [ON]"
+		if player.Character then
+			disableAnimate(player.Character)
+		end
+		HumanAnimCons.charAdded = player.CharacterAdded:Connect(function(newChar)
+			disableAnimate(newChar)
+		end)
+	else
+		disableAnimButton.BackgroundColor3 = Color3.fromRGB(255, 100, 50)
+		disableAnimButton.Text = "Disable Animation [OFF]"
+		if player.Character then
+			enableAnimate(player.Character)
+		end
+		if HumanAnimCons.charAdded then
+			HumanAnimCons.charAdded:Disconnect()
+			HumanAnimCons.charAdded = nil
+		end
+	end
+end)
+
+local antiAFKV2Button = Instance.new("TextButton", utilityPage); antiAFKV2Button.Name = "AntiAFKV2Button"; antiAFKV2Button.Size = UDim2.new(0, 200, 0, 50); antiAFKV2Button.Position = UDim2.new(0.5, -100, 0, 140); antiAFKV2Button.BackgroundColor3 = Color3.fromRGB(50, 200, 255); antiAFKV2Button.Text = "AntiAFK v2"; antiAFKV2Button.Font = Enum.Font.SourceSansBold; antiAFKV2Button.TextSize = 20; antiAFKV2Button.TextColor3 = Color3.fromRGB(255, 255, 255); antiAFKV2Button.MouseButton1Click:Connect(function() local vu = game:GetService("VirtualUser"); local plr = game:GetService("Players").LocalPlayer; local gui = Instance.new("ScreenGui", game.CoreGui); local main = Instance.new("Frame", gui); main.Size = UDim2.new(0, 410, 0, 260); main.Position = UDim2.new(0.5, -205, 0.5, -130); main.BackgroundColor3 = Color3.fromRGB(15, 15, 15); main.BorderSizePixel = 0; main.Active = true; main.Draggable = true; local shadow = Instance.new("ImageLabel", main); shadow.Size = UDim2.new(1, 60, 1, 60); shadow.Position = UDim2.new(0, -30, 0, -30); shadow.Image = "rbxassetid://1316045217"; shadow.ImageTransparency = 0.55; shadow.BackgroundTransparency = 1; local anime = Instance.new("ImageLabel", main); anime.Size = UDim2.new(0, 130, 0, 180); anime.Position = UDim2.new(1, -140, 0, 10); anime.BackgroundTransparency = 1; anime.Image = "rbxassetid://7137016903"; local title = Instance.new("TextLabel", main); title.Size = UDim2.new(1, -160, 0, 35); title.Position = UDim2.new(0, 15, 0, 10); title.BackgroundTransparency = 1; title.Font = Enum.Font.GothamBold; title.Text = "Anti-AFK v11 • FO SCLR"; title.TextColor3 = Color3.fromRGB(120, 255, 180); title.TextSize = 21; title.TextXAlignment = Enum.TextXAlignment.Left; local sub = Instance.new("TextLabel", main); sub.Size = UDim2.new(1, -160, 0, 22); sub.Position = UDim2.new(0, 15, 0, 45); sub.BackgroundTransparency = 1; sub.Font = Enum.Font.Gotham; sub.Text = "Japan Anime Edition • HTLR UI"; sub.TextColor3 = Color3.fromRGB(150, 150, 150); sub.TextSize = 14; sub.TextXAlignment = Enum.TextXAlignment.Left; local status = Instance.new("TextLabel", main); status.Size = UDim2.new(1, -160, 0, 22); status.Position = UDim2.new(0, 15, 0, 75); status.BackgroundTransparency = 1; status.Font = Enum.Font.GothamMedium; status.Text = "Status: OFF"; status.TextColor3 = Color3.fromRGB(220, 220, 220); status.TextSize = 16; status.TextXAlignment = Enum.TextXAlignment.Left; local active = Instance.new("TextLabel", main); active.Size = UDim2.new(1, -160, 0, 22); active.Position = UDim2.new(0, 15, 0, 100); active.BackgroundTransparency = 1; active.Font = Enum.Font.GothamMedium; active.Text = "Active: 00:00"; active.TextColor3 = Color3.fromRGB(220, 220, 220); active.TextSize = 16; active.TextXAlignment = Enum.TextXAlignment.Left; local function MakeButton(txt) local b = Instance.new("TextButton"); b.Size = UDim2.new(0, 170, 0, 42); b.BackgroundColor3 = Color3.fromRGB(30, 30, 30); b.TextColor3 = Color3.fromRGB(235, 235, 235); b.Font = Enum.Font.GothamBold; b.TextSize = 18; b.Text = txt; b.AutoButtonColor = false; return b end; local enable = MakeButton("Enable"); enable.Parent = main; enable.Position = UDim2.new(0, 15, 0, 140); local mode = MakeButton("Mode: Ultra"); mode.Parent = main; mode.Position = UDim2.new(0, 15, 0, 190); local enabled = false; local timer = 0; enable.MouseButton1Click:Connect(function() enabled = not enabled; if enabled then enable.Text = "Disable"; enable.BackgroundColor3 = Color3.fromRGB(0, 150, 70); status.Text = "Status: ON" else enable.Text = "Enable"; enable.BackgroundColor3 = Color3.fromRGB(30, 30, 30); status.Text = "Status: OFF" end end); task.spawn(function() while task.wait(1) do if enabled then timer = timer + 1; local m = math.floor(timer / 60); local s = timer % 60; active.Text = string.format("Active: %02d:%02d", m, s); vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame); task.wait(0.4); vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame) end end end) end)
+
+local aegisEnabled = false
+local touchConnections = {}
+
+local aegisButton = Instance.new("TextButton", playerPage)
+aegisButton.Name = "AegisButton"
+aegisButton.Size = UDim2.new(0, 240, 0, 50)
+aegisButton.Position = UDim2.new(0.5, -120, 0, 20)
+aegisButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+aegisButton.Text = "antiRagdoll (shouldhold bat) Mode [OFF]"
+aegisButton.Font = Enum.Font.SourceSansBold
+aegisButton.TextSize = 18
+aegisButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local THREAT_TOOL_NAMES = {
+["Bat"] = true,
+["Medusa's Head"] = true,
+}
+
+local function onPartTouched(hit)
+
+local tool = hit:FindFirstAncestorOfClass("Tool")  
+if tool and THREAT_TOOL_NAMES[tool.Name] then  
+    local char = localPlayer.Character  
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end  
+      
+    local hrp = char.HumanoidRootPart  
+      
+      
+    if hrp.Anchored then return end  
+
+      
+    hrp.Anchored = true  
+      
+      
+    task.wait()   
+    hrp.Anchored = false  
+end
+
+end
+
+local function setupAegis(character)
+
+for _, connection in ipairs(touchConnections) do  
+    connection:Disconnect()  
+end  
+touchConnections = {}  
+
+  
+for _, part in ipairs(character:GetChildren()) do  
+    if part:IsA("BasePart") then  
+        table.insert(touchConnections, part.Touched:Connect(onPartTouched))  
+    end  
+end
+
+end
+
+local function removeAegis()
+for _, connection in ipairs(touchConnections) do
+connection:Disconnect()
+end
+touchConnections = {}
+end
+
+local function toggleAegis()
+aegisEnabled = not aegisEnabled
+if aegisEnabled then
+aegisButton.BackgroundColor3 = Color3.fromRGB(255, 215, 0) -- Aegis Gold
+aegisButton.Text = "antiRagdoll Mode [ON]"
+if localPlayer.Character then
+setupAegis(localPlayer.Character)
+end
+else
+aegisButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+aegisButton.Text = "Anti-Ragdoll ( u should hold bat 24h)[OFF]"
+removeAegis()
+end
+end
+
+aegisButton.MouseButton1Click:Connect(toggleAegis)
+
+localPlayer.CharacterAdded:Connect(function(character)
+if aegisEnabled then
+setupAegis(character)
+end
+end)
+
+local antiFlingEnabled = false; local stopAntiFlingFunc
+local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "Anti-Fling 75-80% [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
+function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "Anti-Fling 75-80% [ON]"; stopAntiFlingFunc = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaresXForest/anti-fling/refs/heads/main/antflingv2"))() else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "Anti-Fling 75-80% [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
+antiFlingButton.MouseButton1Click:Connect(toggleAntiFling)
+local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 12; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "لا تنط لا تستخدم أدوات زيادة السرعة لل antifling و لل anti Ragdoll  لازم تمسك العصا 24 ساعة"
+
+local infiniteJumpButton = Instance.new("TextButton", playerPage); infiniteJumpButton.Name = "InfiniteJumpButton"; infiniteJumpButton.Size = UDim2.new(0, 200, 0, 40); infiniteJumpButton.Position = UDim2.new(0.5, -100, 0, 170); infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; infiniteJumpButton.Font = Enum.Font.SourceSansBold; infiniteJumpButton.TextColor3 = Color3.fromRGB(255, 255, 255); infiniteJumpButton.TextSize = 18; local isJumpActive = false; local jumpConnection = nil; local function activateJump() if jumpConnection then return end; jumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function() if isJumpActive and localPlayer.Character then local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart") if rootPart then rootPart.Velocity = Vector3.new(rootPart.Velocity.X, 50, rootPart.Velocity.Z) end end end) end; local function deactivateJump() if jumpConnection then jumpConnection:Disconnect(); jumpConnection = nil end end; infiniteJumpButton.MouseButton1Click:Connect(function() isJumpActive = not isJumpActive; if isJumpActive then infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); infiniteJumpButton.Text = "Infinite Jump [ON]"; activateJump() else infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; deactivateJump() end end)
+
+
+
+
+
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+
+local circle = Instance.new("Part")
+circle.Name = "GroundCircle"
+circle.Shape = Enum.PartType.Cylinder
+circle.Size = Vector3.new(0.2, 33, 33) 
+circle.Color = Color3.fromRGB(0, 255, 0) 
+circle.Material = Enum.Material.Neon
+circle.Transparency = 0.3
+circle.Anchored = true
+circle.CanCollide = false
+circle.Parent = workspace
+
+
+circle.Orientation = Vector3.new(0, 0, 90)
+
+RunService.RenderStepped:Connect(function()
+    if player.Character 
+    and player.Character:FindFirstChild("HumanoidRootPart") then
+        
+        local hrp = player.Character.HumanoidRootPart
+        
+     
+
+
+
+       circle.Position = Vector3.new(
+            hrp.Position.X,
+            hrp.Position.Y - 3, 
+            hrp.Position.Z
+        )
+    end
+end)
+
