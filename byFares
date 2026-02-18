@@ -3,9 +3,14 @@ local ScreenGui = Instance.new("ScreenGui"); ScreenGui.Name = "FaresGui"; Screen
 
 local MainFrame = Instance.new("Frame"); MainFrame.Name = "MainFrame"; MainFrame.Size = UDim2.new(0, 400, 0, 350); MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175); MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45); MainFrame.BorderColor3 = Color3.fromRGB(80, 80, 120); MainFrame.BorderSizePixel = 2; MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.Parent = ScreenGui
 
-local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v3"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
+local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v4.3"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
 
 local localPlayer = game:GetService("Players").LocalPlayer
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+
 local features = { AutoRefreshActive = false }
 local autoRefreshCoroutine = nil
 
@@ -32,6 +37,129 @@ switchPage("Main")
 local pvpPage = createPage("PVP")
 createTab("PVP", 300) 
 
+
+
+
+
+local autoBatEnabled = false
+local ToolName = "Bat"
+
+local autoBatButton = Instance.new("TextButton", pvpPage)
+autoBatButton.Size = UDim2.new(0,200,0,40)
+autoBatButton.Position = UDim2.new(0.5,-100,0,120)
+autoBatButton.BackgroundColor3 = Color3.fromRGB(255,80,80)
+autoBatButton.Text = "Auto Bat [OFF]"
+autoBatButton.Font = Enum.Font.SourceSansBold
+autoBatButton.TextColor3 = Color3.fromRGB(255,255,255)
+autoBatButton.TextSize = 18
+
+autoBatButton.MouseButton1Click:Connect(function()
+	autoBatEnabled = not autoBatEnabled
+	if autoBatEnabled then
+		autoBatButton.Text = "Auto Bat [ON]"
+		autoBatButton.BackgroundColor3 = Color3.fromRGB(50,255,50)
+	else
+		autoBatButton.Text = "Auto Bat [OFF]"
+		autoBatButton.BackgroundColor3 = Color3.fromRGB(255,80,80)
+	end
+end)
+
+RunService.RenderStepped:Connect(function() end) 
+
+RunService.RenderStepped:Connect(function()
+	if not autoBatEnabled then return end
+	local char = player.Character
+	if not char then return end
+	local tool = char:FindFirstChildOfClass("Tool")
+	if tool and tool.Name == ToolName then
+		pcall(function()
+			tool:Activate()
+		end)
+	end
+end)
+
+
+
+local player = game.Players.LocalPlayer
+
+local running = false
+local parentFrame = pvpPage 
+
+local btn = Instance.new("TextButton", parentFrame)
+btn.Size = UDim2.fromScale(0.1, 0.8)
+btn.Text = "Auto Steal : OFF"
+btn.TextColor3 = Color3.fromRGB(255,255,255)
+btn.TextScaled = true
+btn.Font = Enum.Font.GothamBold
+btn.BackgroundColor3 = Color3.fromRGB(90,40,130)
+btn.BorderSizePixel = 0
+
+local corner = Instance.new("UICorner", btn)
+corner.CornerRadius = UDim.new(0.2,0)
+
+local stroke = Instance.new("UIStroke", btn)
+stroke.Color = Color3.fromRGB(200,120,255)
+stroke.Thickness = 2
+stroke.Transparency = 0.2
+
+task.spawn(function()
+	while true do
+		if running then
+			local char = player.Character
+			if char and char:FindFirstChild("HumanoidRootPart") then
+
+				for _,v in pairs(workspace:GetDescendants()) do
+					if v:IsA("ProximityPrompt") then
+						pcall(function()
+							v.HoldDuration = 0
+							if v.Parent and v.Parent:IsA("BasePart") then
+								if (v.Parent.Position - char.HumanoidRootPart.Position).Magnitude <= v.MaxActivationDistance then
+									fireproximityprompt(v)
+								end
+							end
+						end)
+					end
+				end
+
+				if workspace:FindFirstChild("Plots") then
+					for _,plot in pairs(workspace.Plots:GetChildren()) do
+						if plot:FindFirstChild("AnimalPodiums") then
+							for _,podium in pairs(plot.AnimalPodiums:GetChildren()) do
+								local prompt = podium:FindFirstChild("Base")
+									and podium.Base:FindFirstChild("Spawn")
+									and podium.Base.Spawn:FindFirstChild("PromptAttachment")
+									and podium.Base.Spawn.PromptAttachment:FindFirstChild("ProximityPrompt")
+
+								if prompt then
+									pcall(function()
+										prompt.HoldDuration = 0
+										if (prompt.Parent.Parent.Position - char.HumanoidRootPart.Position).Magnitude <= prompt.MaxActivationDistance then
+											fireproximityprompt(prompt)
+										end
+									end)
+								end
+							end
+						end
+					end
+				end
+
+			end
+		end
+		task.wait(0.05)
+	end
+end)
+
+btn.MouseButton1Click:Connect(function()
+	running = not running
+
+	if running then
+		btn.Text = "Auto Steal : ON"
+		btn.BackgroundColor3 = Color3.fromRGB(120,70,180)
+	else
+		btn.Text = "Auto Steal : OFF"
+		btn.BackgroundColor3 = Color3.fromRGB(90,40,130)
+	end
+end)
 
 local autoJumpButton = Instance.new("TextButton", pvpPage)
 autoJumpButton.Name = "AutoJumpButton"
