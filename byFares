@@ -3,7 +3,7 @@ local ScreenGui = Instance.new("ScreenGui"); ScreenGui.Name = "FaresGui"; Screen
 
 local MainFrame = Instance.new("Frame"); MainFrame.Name = "MainFrame"; MainFrame.Size = UDim2.new(0, 400, 0, 350); MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175); MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45); MainFrame.BorderColor3 = Color3.fromRGB(80, 80, 120); MainFrame.BorderSizePixel = 2; MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.Parent = ScreenGui
 
-local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v4.3"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
+local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v5"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
 
 local localPlayer = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
@@ -425,7 +425,7 @@ aegisButton.Name = "AegisButton"
 aegisButton.Size = UDim2.new(0, 240, 0, 50)
 aegisButton.Position = UDim2.new(0.5, -120, 0, 20)
 aegisButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-aegisButton.Text = "antiRagdoll (shouldhold bat) Mode [OFF]"
+aegisButton.Text = "لا تشغلة[OFF]"
 aegisButton.Font = Enum.Font.SourceSansBold
 aegisButton.TextSize = 18
 aegisButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -483,14 +483,14 @@ end
 local function toggleAegis()
 aegisEnabled = not aegisEnabled
 if aegisEnabled then
-aegisButton.BackgroundColor3 = Color3.fromRGB(255, 215, 0) -- Aegis Gold
-aegisButton.Text = "antiRagdoll Mode [ON]"
+aegisButton.BackgroundColor3 = Color3.fromRGB(255, 215, 0) 
+aegisButton.Text = "لا تشغلة[ON]"
 if localPlayer.Character then
 setupAegis(localPlayer.Character)
 end
 else
 aegisButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-aegisButton.Text = "Anti-Ragdoll ( u should hold bat 24h)[OFF]"
+aegisButton.Text = "لا تشغلة[OFF]"
 removeAegis()
 end
 end
@@ -504,13 +504,245 @@ end
 end)
 
 local antiFlingEnabled = false; local stopAntiFlingFunc
-local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "Anti-Fling 75-80% [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
-function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "Anti-Fling 75-80% [ON]"; stopAntiFlingFunc = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaresXForest/anti-fling/refs/heads/main/antflingv2"))() else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "Anti-Fling 75-80% [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
+local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
+function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "لا تشغلة [ON]"; stopAntiFlingFunc = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaresXForest/anti-fling/refs/heads/main/antflingv2"))() else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
 antiFlingButton.MouseButton1Click:Connect(toggleAntiFling)
-local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 12; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "لا تنط لا تستخدم أدوات زيادة السرعة لل antifling و لل anti Ragdoll  لازم تمسك العصا 24 ساعة"
+local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 9; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "الزرين دول بنعمل عليهم تعديلات برمجيه مهم: لو انت فعلت anti Ragdoll و مت او عملت reset ال لعبه هتخرب"
 
 local infiniteJumpButton = Instance.new("TextButton", playerPage); infiniteJumpButton.Name = "InfiniteJumpButton"; infiniteJumpButton.Size = UDim2.new(0, 200, 0, 40); infiniteJumpButton.Position = UDim2.new(0.5, -100, 0, 170); infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; infiniteJumpButton.Font = Enum.Font.SourceSansBold; infiniteJumpButton.TextColor3 = Color3.fromRGB(255, 255, 255); infiniteJumpButton.TextSize = 18; local isJumpActive = false; local jumpConnection = nil; local function activateJump() if jumpConnection then return end; jumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function() if isJumpActive and localPlayer.Character then local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart") if rootPart then rootPart.Velocity = Vector3.new(rootPart.Velocity.X, 50, rootPart.Velocity.Z) end end end) end; local function deactivateJump() if jumpConnection then jumpConnection:Disconnect(); jumpConnection = nil end end; infiniteJumpButton.MouseButton1Click:Connect(function() isJumpActive = not isJumpActive; if isJumpActive then infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); infiniteJumpButton.Text = "Infinite Jump [ON]"; activateJump() else infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; deactivateJump() end end)
 
+local simpleButton = Instance.new("TextButton", playerPage)
+simpleButton.Name = "SimpleButton"
+simpleButton.Size = UDim2.new(0, 200, 0, 40)
+simpleButton.Position = UDim2.new(0.5, -100, 0, 220) 
+simpleButton.BackgroundColor3 = Color3.fromRGB(150, 50, 255)
+simpleButton.Text = "ANTI RAGDOLL BY FARES"
+simpleButton.Font = Enum.Font.SourceSansBold
+simpleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+simpleButton.TextSize = 11
+
+
+simpleButton.MouseButton1Click:Connect(function()
+    local plr = game.Players.LocalPlayer  
+local antistun = true  
+  
+  
+local gui = Instance.new("ScreenGui")  
+gui.Name = "AntiStunGUI"  
+gui.ResetOnSpawn = false  
+gui.Parent = plr:WaitForChild("PlayerGui")  
+  
+local frame = Instance.new("Frame", gui)  
+frame.Size = UDim2.fromScale(0.35,0.12)  
+frame.Position = UDim2.fromScale(0.325,0.8)  
+frame.BackgroundColor3 = Color3.fromRGB(25,25,25)  
+frame.BackgroundTransparency = 0.2  
+frame.Active = true  
+frame.Draggable = true  
+  
+local btn = Instance.new("TextButton", frame)  
+btn.Size = UDim2.fromScale(1,1)  
+btn.Text = "Anti Ragdoll : ON"  
+btn.TextScaled = true  
+btn.BackgroundColor3 = Color3.fromRGB(60,200,120)  
+  
+btn.MouseButton1Click:Connect(function()  
+    antistun = not antistun  
+    if antistun then  
+        btn.Text = "Anti RAGDOL : ON"  
+        btn.BackgroundColor3 = Color3.fromRGB(60,200,120)  
+    else  
+        btn.Text = "AnTi RAGDOLL : OFF"  
+        btn.BackgroundColor3 = Color3.fromRGB(200,60,60)  
+    end  
+end)  
+  
+
+local function restoreControls()  
+    local ps = plr:WaitForChild("PlayerScripts")  
+    local PlayerModule = require(ps:WaitForChild("PlayerModule"))  
+    local controls = PlayerModule:GetControls()  
+    controls:Enable()  
+end  
+  
+
+
+local function stopBadAnimations(h)  
+    local animator = h:FindFirstChildOfClass("Animator")  
+    if not animator then return end  
+  
+    animator.AnimationPlayed:Connect(function(track)        
+        if antistun then        
+            task.wait()        
+            track:Stop()        
+        end        
+    end)  
+end  
+  
+  
+
+local function fixPart(p)  
+    p:GetPropertyChangedSignal("Anchored"):Connect(function()  
+        if antistun and p.Anchored then  
+            p.Anchored = false  
+        end  
+    end)  
+end  
+  
+  
+
+local function fixHumanoid(h)  
+    stopBadAnimations(h)  
+  
+    h:GetPropertyChangedSignal("PlatformStand"):Connect(function()        
+        if antistun and h.PlatformStand then        
+            h.PlatformStand = false        
+            restoreControls()        
+        end        
+    end)        
+    
+    h.StateChanged:Connect(function(_, new)        
+        if not antistun then return end        
+    
+        if new == Enum.HumanoidStateType.Ragdoll        
+        or new == Enum.HumanoidStateType.Physics        
+        or new == Enum.HumanoidStateType.FallingDown then        
+            task.wait()        
+            h:ChangeState(Enum.HumanoidStateType.Running)        
+            restoreControls()        
+        end        
+    end)        
+    
+    task.spawn(function()        
+        while h.Parent do        
+            if antistun then        
+                if h.WalkSpeed == 0 then        
+                    h.WalkSpeed = 16        
+                end        
+                if h.JumpPower == 0 then        
+                    h.JumpPower = 50        
+                end        
+                restoreControls()        
+            end        
+            task.wait(0.25)        
+        end        
+    end)  
+end  
+  
+  
+
+local function onChar(char)  
+    local root = char:WaitForChild("HumanoidRootPart")  
+    local cam = workspace.CurrentCamera  
+    local humanoid = char:WaitForChild("Humanoid")  
+    local RunService = game:GetService("RunService")  
+  
+   
+    local fakePart = Instance.new("Part")  
+    fakePart.Name = "FakeVisual"  
+    fakePart.Size = Vector3.new(2,2,1)  
+    fakePart.Anchored = true  
+    fakePart.CanCollide = false  
+    fakePart.Transparency = 0.4  
+    fakePart.Color = Color3.fromRGB(0,255,0)  
+    fakePart.Parent = workspace  
+  
+    fakePart.CFrame = root.CFrame  
+    cam.CameraSubject = fakePart  
+  
+    local usingFakeMove = false  
+  
+    root.ChildAdded:Connect(function(obj)  
+        if obj:IsA("Attachment") then  
+            usingFakeMove = true  
+        end  
+    end)  
+  
+    root.ChildRemoved:Connect(function(obj)  
+        if obj:IsA("Attachment") then  
+            usingFakeMove = false  
+            fakePart.CFrame = root.CFrame  
+        end  
+    end)  
+  
+    RunService.RenderStepped:Connect(function()  
+        if usingFakeMove then  
+            if cam.CameraSubject ~= fakePart then  
+                cam.CameraSubject = fakePart  
+            end  
+        else  
+            if cam.CameraSubject ~= humanoid then  
+                cam.CameraSubject = humanoid  
+            end  
+            fakePart.CFrame = root.CFrame  
+            return  
+        end  
+  
+        local dir = humanoid.MoveDirection  
+        if dir.Magnitude > 0 then  
+            local newCF = fakePart.CFrame + (dir * 1.2)  
+            fakePart.CFrame = newCF  
+            root.CFrame = newCF  
+        end  
+    end)  
+  
+    
+    local function watchCharacter(char)  
+        local hrp = char:WaitForChild("HumanoidRootPart")  
+        hrp.ChildAdded:Connect(function(obj)  
+            if obj:IsA("Attachment") then  
+                task.wait(0.1)  
+                pcall(function()  
+                    obj:Destroy()  
+                end)  
+            end  
+        end)  
+    end  
+  
+    if plr.Character then  
+        watchCharacter(plr.Character)  
+    end  
+    plr.CharacterAdded:Connect(watchCharacter)  
+  
+    task.spawn(function()  
+        while true do  
+            task.wait(0.1)  
+            local char = plr.Character  
+            if char and char:FindFirstChild("HumanoidRootPart") then  
+                for _,v in pairs(char.HumanoidRootPart:GetChildren()) do  
+                    if v:IsA("Attachment") then  
+                        pcall(function() v:Destroy() end)  
+                    end  
+                end  
+            end  
+        end  
+    end)  
+  
+    for _,v in pairs(char:GetChildren()) do        
+        if v:IsA("Humanoid") then        
+            fixHumanoid(v)        
+        elseif v:IsA("BasePart") then        
+            fixPart(v)        
+        end        
+    end        
+    
+    char.ChildAdded:Connect(function(v)        
+        if v:IsA("Humanoid") then        
+            fixHumanoid(v)        
+        elseif v:IsA("BasePart") then        
+            fixPart(v)        
+        end        
+    end)  
+end  
+  
+if plr.Character then  
+    onChar(plr.Character)  
+end  
+  
+plr.CharacterAdded:Connect(onChar)
+  
+
+end)
 
 
 
