@@ -3,7 +3,7 @@ local ScreenGui = Instance.new("ScreenGui"); ScreenGui.Name = "FaresGui"; Screen
 
 local MainFrame = Instance.new("Frame"); MainFrame.Name = "MainFrame"; MainFrame.Size = UDim2.new(0, 400, 0, 350); MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175); MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45); MainFrame.BorderColor3 = Color3.fromRGB(80, 80, 120); MainFrame.BorderSizePixel = 2; MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.Parent = ScreenGui
 
-local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v5"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
+local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v6"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
 
 local localPlayer = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
@@ -507,7 +507,7 @@ local antiFlingEnabled = false; local stopAntiFlingFunc
 local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
 function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "لا تشغلة [ON]"; stopAntiFlingFunc = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaresXForest/anti-fling/refs/heads/main/antflingv2"))() else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
 antiFlingButton.MouseButton1Click:Connect(toggleAntiFling)
-local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 9; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "الزرين دول بنعمل عليهم تعديلات برمجيه مهم: لو انت فعلت anti Ragdoll و مت او عملت reset ال لعبه هتخرب"
+local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 14; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "الزرين دول بنعمل عليهم تعديلات برمجه "
 
 local infiniteJumpButton = Instance.new("TextButton", playerPage); infiniteJumpButton.Name = "InfiniteJumpButton"; infiniteJumpButton.Size = UDim2.new(0, 200, 0, 40); infiniteJumpButton.Position = UDim2.new(0.5, -100, 0, 170); infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; infiniteJumpButton.Font = Enum.Font.SourceSansBold; infiniteJumpButton.TextColor3 = Color3.fromRGB(255, 255, 255); infiniteJumpButton.TextSize = 18; local isJumpActive = false; local jumpConnection = nil; local function activateJump() if jumpConnection then return end; jumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function() if isJumpActive and localPlayer.Character then local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart") if rootPart then rootPart.Velocity = Vector3.new(rootPart.Velocity.X, 50, rootPart.Velocity.Z) end end end) end; local function deactivateJump() if jumpConnection then jumpConnection:Disconnect(); jumpConnection = nil end end; infiniteJumpButton.MouseButton1Click:Connect(function() isJumpActive = not isJumpActive; if isJumpActive then infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); infiniteJumpButton.Text = "Infinite Jump [ON]"; activateJump() else infiniteJumpButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); infiniteJumpButton.Text = "Infinite Jump [OFF]"; deactivateJump() end end)
 
@@ -634,10 +634,16 @@ end
 local function onChar(char)  
     local root = char:WaitForChild("HumanoidRootPart")  
     local cam = workspace.CurrentCamera  
+    
     local humanoid = char:WaitForChild("Humanoid")  
     local RunService = game:GetService("RunService")  
   
    
+for _, old in pairs(workspace:GetChildren()) do
+    if old:IsA("Part") and old.Name == "FakeVisual" then
+        pcall(function() old:Destroy() end)
+    end
+end
     local fakePart = Instance.new("Part")  
     fakePart.Name = "FakeVisual"  
     fakePart.Size = Vector3.new(2,2,1)  
@@ -646,8 +652,25 @@ local function onChar(char)
     fakePart.Transparency = 0.4  
     fakePart.Color = Color3.fromRGB(0,255,0)  
     fakePart.Parent = workspace  
-  
-    fakePart.CFrame = root.CFrame  
+  local cam = workspace.CurrentCamera
+local RunService = game:GetService("RunService")
+local humanoid = char:WaitForChild("Humanoid")
+local root = char:WaitForChild("HumanoidRootPart")
+
+cam.CameraType = Enum.CameraType.Custom
+cam.CameraSubject = humanoid
+
+RunService.RenderStepped:Connect(function()
+    if fakePart and fakePart.Parent and root then
+        
+        local offset = fakePart.Position - root.Position
+        
+        
+        humanoid.CameraOffset = offset
+    end
+end)
+    fakePart.CFrame = root.CFrame 
+ 
     cam.CameraSubject = fakePart  
   
     local usingFakeMove = false  
@@ -672,7 +695,7 @@ local function onChar(char)
             end  
         else  
             if cam.CameraSubject ~= humanoid then  
-                cam.CameraSubject = humanoid  
+                  
             end  
             fakePart.CFrame = root.CFrame  
             return  
@@ -787,3 +810,128 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
+
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+
+
+if CoreGui:FindFirstChild("EjectGUI") then
+    CoreGui.EjectGUI:Destroy()
+end
+
+
+local EjectGUI = Instance.new("ScreenGui")
+EjectGUI.Name = "EjectGUI"
+EjectGUI.Parent = CoreGui
+EjectGUI.ResetOnSpawn = false
+
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = EjectGUI
+MainFrame.Size = UDim2.new(0, 140, 0, 160) -- Taller to accommodate the drag bar
+MainFrame.Position = UDim2.new(1, -160, 1, -180)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MainFrame.BorderSizePixel = 0
+MainFrame.Visible = false -- Start invisible for the intro tween
+
+local UICorner_Frame = Instance.new("UICorner", MainFrame)
+UICorner_Frame.CornerRadius = UDim.new(0, 8)
+
+local UIStroke_Frame = Instance.new("UIStroke", MainFrame)
+UIStroke_Frame.Color = Color3.fromRGB(80, 80, 100)
+UIStroke_Frame.Thickness = 1.5
+
+
+local DragBar = Instance.new("Frame")
+DragBar.Name = "DragBar"
+DragBar.Parent = MainFrame
+DragBar.Size = UDim2.new(1, 0, 0, 30)
+DragBar.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+DragBar.BorderSizePixel = 0
+local DragCorner = Instance.new("UICorner", DragBar); DragCorner.CornerRadius = UDim.new(0, 8)
+
+local DragLabel = Instance.new("TextLabel", DragBar)
+DragLabel.Size = UDim2.new(1, 0, 1, 0)
+DragLabel.BackgroundTransparency = 1
+DragLabel.Font = Enum.Font.Gotham
+DragLabel.Text = "حرك الزر هنا"
+DragLabel.TextColor3 = Color3.fromRGB(200, 200, 220)
+DragLabel.TextSize = 14
+
+
+local EjectButton = Instance.new("TextButton")
+EjectButton.Name = "EjectButton"
+EjectButton.Parent = MainFrame
+EjectButton.Size = UDim2.new(0, 120, 0, 120)
+EjectButton.Position = UDim2.new(0.5, -60, 1, -125)
+EjectButton.BackgroundColor3 = Color3.fromRGB(150, 30, 30)
+EjectButton.Font = Enum.Font.GothamBold
+EjectButton.Text = "LEAVE THE GAME"
+EjectButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+EjectButton.TextSize = 16
+EjectButton.TextWrapped = true
+
+local UICorner_Button = Instance.new("UICorner", EjectButton)
+UICorner_Button.CornerRadius = UDim.new(1, 0) -- Makes it a circle
+
+local UIStroke_Button = Instance.new("UIStroke", EjectButton)
+UIStroke_Button.Color = Color3.fromRGB(255, 100, 100)
+UIStroke_Button.Thickness = 2
+
+
+EjectButton.MouseButton1Click:Connect(function()
+    EjectButton:TweenSize(UDim2.new(0, 110, 0, 110), "Out", "Quad", 0.1, true)
+    wait(0.1)
+    LocalPlayer:Kick("مبروك انت طلعت من لعبه")
+end)
+
+
+local function MakeDraggable(dragHandle, guiToMove)
+    local dragging, dragStart, startPos
+    
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = guiToMove.Position
+            
+            local conn
+            conn = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                    conn:Disconnect()
+                end
+            end)
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragging then
+            local delta = input.Position - dragStart
+            guiToMove.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+MakeDraggable(DragBar, MainFrame)
+
+
+local function StartIntro()
+    MainFrame.Position = UDim2.new(1, 0, 1, 0)
+    MainFrame.Visible = true
+    
+    local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    local goal = {
+        Position = UDim2.new(1, -160, 1, -180)
+    }
+    local tween = TweenService:Create(MainFrame, tweenInfo, goal)
+    tween:Play()
+end
+
+StartIntro()
