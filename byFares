@@ -3,7 +3,7 @@ local ScreenGui = Instance.new("ScreenGui"); ScreenGui.Name = "FaresGui"; Screen
 
 local MainFrame = Instance.new("Frame"); MainFrame.Name = "MainFrame"; MainFrame.Size = UDim2.new(0, 400, 0, 350); MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175); MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45); MainFrame.BorderColor3 = Color3.fromRGB(80, 80, 120); MainFrame.BorderSizePixel = 2; MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.Parent = ScreenGui
 
-local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v6"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
+local TitleLabel = Instance.new("TextLabel"); TitleLabel.Name = "Title"; TitleLabel.Size = UDim2.new(1, 0, 0, 30); TitleLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55); TitleLabel.BorderColor3 = Color3.fromRGB(80, 80, 120); TitleLabel.Text = "Fares steal a brainrot v7"; TitleLabel.Font = Enum.Font.SourceSansBold; TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255); TitleLabel.TextSize = 18; TitleLabel.Parent = MainFrame
 
 local localPlayer = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
@@ -504,8 +504,85 @@ end
 end)
 
 local antiFlingEnabled = false; local stopAntiFlingFunc
-local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
-function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "لا تشغلة [ON]"; stopAntiFlingFunc = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaresXForest/anti-fling/refs/heads/main/antflingv2"))() else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "لا تشغلة [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
+local antiFlingButton = Instance.new("TextButton", playerPage); antiFlingButton.Name = "AntiFlingButton"; antiFlingButton.Size = UDim2.new(0, 200, 0, 40); antiFlingButton.Position = UDim2.new(0.5, -100, 0, 80); antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "LAG  [OFF]"; antiFlingButton.Font = Enum.Font.SourceSansBold; antiFlingButton.TextColor3 = Color3.fromRGB(255, 255, 255); antiFlingButton.TextSize = 18
+function toggleAntiFling() antiFlingEnabled = not antiFlingEnabled; if antiFlingEnabled then antiFlingButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50); antiFlingButton.Text = "LAG[ON]"; local player = game.Players.LocalPlayer
+stopAntiFlingFunc = function() end
+local backpack = player:WaitForChild("Backpack")
+
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "LAAGGGG_BYFARES"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Parent = gui
+frame.Size = UDim2.new(0, 220, 0, 90)
+frame.Position = UDim2.new(0.5, -110, 0.75, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 15)
+
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1, 0, 0.4, 0)
+title.BackgroundTransparency = 1
+title.Text = "LAAGGGG / BYFARES"
+title.TextColor3 = Color3.fromRGB(0, 200, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+
+local button = Instance.new("TextButton")
+button.Parent = frame
+button.Size = UDim2.new(0.85, 0, 0.4, 0)
+button.Position = UDim2.new(0.075, 0, 0.5, 0)
+button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.TextScaled = true
+button.Text = "USE ALL TOOLS"
+button.Font = Enum.Font.GothamBold
+button.BorderSizePixel = 0
+button.AutoButtonColor = true
+
+local btnCorner = Instance.new("UICorner", button)
+btnCorner.CornerRadius = UDim.new(0, 12)
+
+-- الوظيفة
+local function useAllTools()
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- شيل كل الأدوات من الشخصية
+    for _, item in ipairs(character:GetChildren()) do
+        if item:IsA("Tool") then
+            item.Parent = backpack
+        end
+    end
+
+    task.wait(0.1)
+
+    -- رجّعهم تاني + شغّلهم
+    for _, tool in ipairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = character
+
+            if tool:FindFirstChild("Handle") then
+                tool.Handle.CanCollide = false
+                tool.Handle.Massless = true
+            end
+
+            pcall(function()
+                tool:Activate()
+            end)
+        end
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    useAllTools()
+end) else antiFlingButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50); antiFlingButton.Text = "LAG [OFF]"; if stopAntiFlingFunc then pcall(stopAntiFlingFunc) end; local char = localPlayer.Character or localPlayer.CharacterAdded:Wait(); char:FindFirstChild("Humanoid").Health = 0 end end
 antiFlingButton.MouseButton1Click:Connect(toggleAntiFling)
 local antiFlingWarning = Instance.new("TextLabel", playerPage); antiFlingWarning.Name = "AntiFlingWarning"; antiFlingWarning.Size = UDim2.new(1, -40, 0, 40); antiFlingWarning.Position = UDim2.new(0.5, -180, 0, 125); antiFlingWarning.BackgroundTransparency = 1; antiFlingWarning.TextColor3 = Color3.fromRGB(255, 200, 0); antiFlingWarning.Font = Enum.Font.SourceSans; antiFlingWarning.TextSize = 14; antiFlingWarning.TextWrapped = true; antiFlingWarning.Text = "الزرين دول بنعمل عليهم تعديلات برمجه "
 
